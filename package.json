@@ -1,0 +1,28 @@
+{
+  "name": "eliftech",
+  "version": "1.0.0",
+  "description": "Education project from ElifTech School",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently --kill-others \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "npm start -w frontend",
+    "start:frontend": "npm start -w backend"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vyacheslavKhoroshev/eliftech.git"
+  },
+  "author": "Vyacheslav Khoroshev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vyacheslavKhoroshev/eliftech/issues"
+  },
+  "homepage": "https://github.com/vyacheslavKhoroshev/eliftech#readme",
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
