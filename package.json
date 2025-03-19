@@ -4,9 +4,13 @@
   "description": "Education project from ElifTech School",
   "main": "index.js",
   "scripts": {
+    "build": "npm install concurrently --save && npm run install-all-deps && npm run start",
     "start": "concurrently --kill-others \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "npm start -w frontend",
-    "start:frontend": "npm start -w backend"
+    "start:frontend": "npm start -w backend",
+    "install-all-deps": "concurrently \"npm run backend-dependencies\" \"npm run frontend-dependencies\"",
+    "backend-dependencies": "npm install -w frontend",
+    "frontend-dependencies": "npm install -w backend"
   },
   "workspaces": [
     "frontend",
