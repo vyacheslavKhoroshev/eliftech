@@ -1,0 +1,17 @@
+.select_container {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem;
+  min-width: 10rem;
+}
+
+.select {
+  appearance: none;
+  background: var(--color-formElemnt);
+  border: 1px solid var(--color-dark);
+  border-radius: 5px;
+  padding-left: 0.7rem;
+  font-size: 1rem;
+  height: 1.8rem;
+  min-width: 10rem;
+}
