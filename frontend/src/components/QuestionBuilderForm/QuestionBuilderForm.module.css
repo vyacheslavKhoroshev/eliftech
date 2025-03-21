@@ -1,0 +1,14 @@
+.question_form {
+  border: 1px solid #000;
+  margin: 0.5rem 0;
+}
+
+.question_container {
+  display: flex;
+  align-items: center;
+}
+.choices_container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}

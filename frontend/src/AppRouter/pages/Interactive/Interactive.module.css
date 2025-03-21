@@ -1,0 +1,12 @@
+.interactive_container {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  margin: 10vh auto 0 auto;
+  width: 50vw;
+  border: 1px solid #000;
+}
+
+.interactive_header {
+  margin-bottom: 2rem;
+}
