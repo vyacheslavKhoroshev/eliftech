@@ -1,11 +1,36 @@
-import { createServer } from "http";
-import { Server } from "socket.io";
+import Express, { NextFunction, Request, Response } from "express";
+import indexRoute from "./routes";
+import { config } from "dotenv";
+import mongoose from "mongoose";
+config();
 
-import * as dotenv from "dotenv";
+const app = Express();
 
-dotenv.config();
+app.use(Express.json());
+app.use(indexRoute);
 
-const PORT = process.env.PORT || 8080;
-const httpServer = createServer();
+app.use((error: any, _req: Request, res: Response, _next: NextFunction) => {
+  res.status(501).json({
+    status: false,
+    message: "An error occurred",
+    error,
+  });
+});
 
-httpServer.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
+const port = process.env.PORT || 8000;
+
+app.listen(port, () => {
+  console.log(`server is running on ${port}`);
+});
+
+mongoose
+  .connect(process.env.DATABASE_URL || "")
+  .then((res) => {
+    if (res) {
+      console.log(`Database connection succeffully`);
+    }
+  })
+  .catch((err) => {
+    console.log(process.env.DATABASE_URL);
+    console.log(err);
+  });
