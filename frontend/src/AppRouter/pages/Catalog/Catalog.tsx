@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Catalog.module.css";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../../types/route.enum";
 import QuizCard from "../../../components/QuizCard/QuizCard";
 import Button from "../../../components/UI/Button/Button";
 import { useCatalogContext } from "../../../hooks/useCatalogContext";
+import { QuizService } from "../../../API/QuizService";
 
 const Catalog: React.FC = () => {
-  const { catalog } = useCatalogContext()!;
+  const { catalog, setCatalog } = useCatalogContext()!;
+
+  useEffect(() => {
+    catalog.length === 0 &&
+      QuizService.getAll().then((data) => setCatalog(data!));
+  }, []);
 
   const navigate = useNavigate();
   return (
@@ -18,7 +24,7 @@ const Catalog: React.FC = () => {
       </h1>
       <div className={styles.quizes_container}>
         {catalog.map((quiz) => (
-          <QuizCard quiz={quiz} key={quiz.id} />
+          <QuizCard quiz={quiz} key={quiz._id} />
         ))}
       </div>
     </div>

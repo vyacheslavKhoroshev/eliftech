@@ -1,6 +1,7 @@
+import { TestModel } from "../schemas";
+import { ITest } from "../types/test.type";
 import { BaseController } from "./base.controller";
-import { TestSchema } from "../schemas/test.schema";
 
-class TestControllerClass extends BaseController {}
+class TestControllerClass extends BaseController<ITest> {}
 
-export const TestController = new TestControllerClass(TestSchema);
+export const TestController = new TestControllerClass(TestModel);

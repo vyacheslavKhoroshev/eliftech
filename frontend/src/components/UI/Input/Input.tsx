@@ -1,17 +1,25 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import { firstLetterUpperCase } from "../../../helpers/firstLetterUpperCase";
 import styles from "./Input.module.css";
-import { InputHTMLAttributes, RefObject } from "react";
+import { InputHTMLAttributes } from "react";
 
-interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface myHTMLInputElement extends HTMLInputElement {
+  nestedType: "array" | "object";
+}
+
+export interface IInputProps extends InputHTMLAttributes<myHTMLInputElement> {
   labelname?: string | number;
   className?: string;
+  nestedType?: "array" | "object";
 }
+
+export type InputChangeEventType = React.ChangeEvent<myHTMLInputElement>;
 
 const Input = forwardRef<HTMLInputElement, IInputProps>(
   ({ ...props }: IInputProps, ref) => {
+    const [focus, setFocus] = useState(false);
     return (
-      <div className={styles.input_container}>
+      <span className={styles.input_container}>
         {props.labelname && (
           <label htmlFor={props.name}>
             {firstLetterUpperCase(props.labelname!)}:{" "}
@@ -21,9 +29,22 @@ const Input = forwardRef<HTMLInputElement, IInputProps>(
         <input
           ref={ref}
           className={styles.input + " " + props.className}
+          autoFocus={focus}
+          onFocus={() => setFocus(true)}
+          onBlur={() => {
+            setFocus((prev) => !prev);
+          }}
           {...props}
         />
-      </div>
+
+        {focus === true && (
+          <button
+            type="button"
+            className={styles.btn}
+            onClick={() => setFocus(false)}
+          />
+        )}
+      </span>
     );
   }
 );

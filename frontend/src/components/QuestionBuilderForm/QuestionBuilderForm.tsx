@@ -1,103 +1,61 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import styles from "./QuestionBuilderForm.module.css";
 import { QUESTION_TYPE } from "../../types/questionType.enum";
-import { IQuestion } from "../../types/data.type";
-import Input from "../UI/Input/Input";
+import Input, { InputChangeEventType } from "../UI/Input/Input";
 import Button from "../UI/Button/Button";
-import Select from "../UI/Select/Select";
-import { INPUT_TYPE } from "../../types/input.type";
+import Select, { SelectChangeEventType } from "../UI/Select/Select";
+import { IQuestion } from "../../types/data.type";
+import { useHandleOnChange } from "../../hooks/useHandleOnChange";
+import ChoiceContainer from "./ChoiceContainer";
+import { QuestionContext } from "../../context/QuestionContext";
 
 const QuestionBuilderForm: React.FC<{
   number: number;
-  question: IQuestion;
-  setQuestions: (q: IQuestion) => void;
-  removeQuestion: (id: string) => void;
-}> = ({ number, question, setQuestions, removeQuestion }) => {
-  const [inputs, setInputs] = useState<IQuestion>({
-    id: question.id,
-    question: question.question,
-    type: question.type,
-    choices: question.choices,
-  });
-  const inputRef = useRef<HTMLInputElement>(null);
+  data: IQuestion;
+  remove: (_id: string) => void;
+  update: (question: IQuestion) => void;
+}> = ({ number, data, remove, update }) => {
+  const [question, setQuestion] = useState<IQuestion>(data);
 
-  const questionTypes = Object.values(QUESTION_TYPE);
-
-  const Choices: React.FC = () => {
-    return (
-      <div className={styles.choices_container}>
-        <Input
-          type={INPUT_TYPE.TEXT}
-          ref={inputRef}
-          placeholder="Enter choice"
-          onBlur={(e) => {
-            setInputs({
-              ...inputs,
-              choices: [...inputs.choices!, e.target.value],
-            });
-            setQuestions(inputs);
-          }}
-        />
-
-        <div className={styles.choices_container}>
-          {inputs.choices.map((choice, i) => {
-            return (
-              <Input
-                value={choice}
-                type={INPUT_TYPE.TEXT}
-                key={i}
-                onChange={(e) => {
-                  setInputs({
-                    ...inputs,
-                    choices: [...inputs.choices!, e.target.value],
-                  });
-                }}
-                onBlur={() => {
-                  setQuestions(inputs);
-                }}
-              />
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
+  const handleOnChange = (e: InputChangeEventType | SelectChangeEventType) =>
+    useHandleOnChange(e, setQuestion);
 
   return (
-    <div className={styles.question_form}>
-      <label>{number}</label>
-      <div className={styles.question_container}>
-        <Input
-          value={inputs.question}
-          type={INPUT_TYPE.TEXT}
-          labelname="question"
-          onChange={(e) => {
-            setInputs({ ...inputs, question: e.target.value });
-          }}
+    <QuestionContext.Provider value={{ question, setQuestion }}>
+      <div className={styles.question_form}>
+        <div
+          className={styles.question_container}
           onBlur={() => {
-            setQuestions(inputs);
+            update(question);
           }}
-        />
-        <Select
-          value={inputs.type}
-          label="type"
-          options={questionTypes}
-          onChange={(e) => {
-            const updatedInputs = { ...inputs, type: e.target.value };
-            setInputs(updatedInputs);
-            setQuestions(updatedInputs);
-          }}
-        />
-        <Button
-          name="remove"
-          onClick={(e) => {
-            e.preventDefault();
-            removeQuestion(question.id);
-          }}
-        />
+        >
+          <div className={styles.question}>
+            <label className={styles.question_count}>{number}.</label>
+            <Input
+              labelname="question"
+              value={question.question}
+              name="question"
+              onChange={handleOnChange}
+            />
+            <Select
+              name="type"
+              value={question.type}
+              label="type"
+              options={Object.values(QUESTION_TYPE)}
+              onChange={handleOnChange}
+            />
+            <Button
+              name="remove"
+              type="button"
+              onClick={() => {
+                remove(question._id);
+              }}
+            />
+          </div>
+          {question.type !== QUESTION_TYPE.TEXT && <ChoiceContainer />}
+        </div>
       </div>
-      {inputs.type !== QUESTION_TYPE.TEXT && <Choices />}
-    </div>
+    </QuestionContext.Provider>
   );
 };
 

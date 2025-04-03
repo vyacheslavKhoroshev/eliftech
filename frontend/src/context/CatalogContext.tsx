@@ -1,19 +1,28 @@
-import React, { createContext, ReactNode, useEffect, useState } from "react";
-import { IComplection, IQuizCard } from "../types/data.type";
-import { TCatalogContextProps } from "../types/catalog.context.props";
-import { mockData } from "../mockData";
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
+import { IComplection, IQuiz } from "../types/data.type";
+import { InitQuiz } from "./initBuilders";
 
-const CatalogContext = createContext<TCatalogContextProps | undefined>(
-  undefined
-);
+export interface ICatalogContext {
+  catalog: IQuiz[];
+  setCatalog: Dispatch<SetStateAction<IQuiz[]>>;
+
+  completions: IComplection[] | [];
+  setCompletions: Dispatch<SetStateAction<IComplection[] | []>>;
+}
+
+const CatalogContext = createContext<ICatalogContext | undefined>(undefined);
 
 const CatalogContextComponent: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [catalog, setCatalog] = useState<IQuizCard[]>(mockData);
+  const [catalog, setCatalog] = useState<IQuiz[]>([new InitQuiz()]);
   const [completions, setCompletions] = useState<IComplection[]>([]);
-
-  useEffect(() => {}, []);
 
   return (
     <CatalogContext.Provider

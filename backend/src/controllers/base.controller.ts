@@ -1,16 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
 
-export class BaseController {
-  model: Model<any>;
+export class BaseController<T> {
+  model: Model<T>;
 
-  constructor(model: Model<any>) {
+  constructor(model: Model<T>) {
     this.model = model;
   }
 
-  private response = (res: Response, req: Request, data: any) => {
-    console.log({ body: req.body, params: req.params });
-
+  public response = (req: Request, res: Response, data: any) => {
+    /*console.log({
+      body: req.body,
+      params: req.params,
+      res,
+    });
+*/
     if (!data) {
       res.status(400).json({
         status: true,
@@ -28,21 +32,21 @@ export class BaseController {
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await this.model.find();
-      this.response(res, req, data);
+      this.response(req, res, data);
     } catch (error) {
-      console.log({ error, body: req.body });
+      console.log({ error, body: req.body, params: req.params });
       next(error);
     }
   };
 
   getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.params;
+      const { id } = req.params;
       const data = await this.model.findById({ _id: id });
 
-      this.response(res, req, data);
+      this.response(req, res, data);
     } catch (error) {
-      console.log({ error, body: req.body });
+      console.log({ error, body: req.body, params: req.params });
       next(error);
     }
   };
@@ -50,10 +54,8 @@ export class BaseController {
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await this.model.create(req.body);
-
-      this.response(res, req, data);
+      this.response(req, res, data);
     } catch (error) {
-      console.log({ error, body: req.body });
       next(error);
     }
   };
@@ -66,9 +68,8 @@ export class BaseController {
         new: true,
       });
 
-      this.response(res, req, data);
+      this.response(req, res, data);
     } catch (error) {
-      console.log({ error, body: req.body });
       next(error);
     }
   };
@@ -78,9 +79,8 @@ export class BaseController {
       const { id } = req.params;
       const data = await this.model.findByIdAndDelete(id);
 
-      this.response(res, req, data);
+      this.response(req, res, data);
     } catch (error) {
-      console.log({ error, body: req.body });
       next(error);
     }
   };

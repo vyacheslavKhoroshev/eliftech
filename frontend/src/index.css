@@ -1,9 +1,9 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --color-light: rgb(235, 229, 229);
-  --color-dark: rgb(253, 14, 14);
-  --color-btn: rgb(201, 201, 201);
-  --color-formElemnt: rgb(255, 255, 255);
+  --color-light: rgb(240, 215, 194);
+  --color-dark: rgb(117, 59, 34);
+  --color-btn: rgb(206, 119, 61);
+  --color-formElemnt: rgb(243, 229, 220);
   background: var(--color-light);
 }
 * {
