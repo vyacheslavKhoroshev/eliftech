@@ -1,27 +1,13 @@
-import { z } from "zod";
+import { z, ZodType } from "zod";
+import { IQuiz } from "../types/quiz.type";
+import { QuestionValidateSchema } from "./question.validation";
 
-const questionSchema = z
-  .object({
-    question: z.string().min(5),
-    type: z.enum(["text", "multiple choices", "single choice"]),
-    choices: z.union([z.array(z.string()), z.string()]),
-  })
-  .strict();
-
-const completionSchema = z
-  .object({
-    answers: z.array(z.string().min(5)),
-    time: z.string().time(),
-  })
-  .strict();
-
-export const createQuizSchema = z
+export const QuizValidateSchema = z
   .object({
     name: z.string().min(5),
     description: z.string().min(5),
-    questions: z.array(questionSchema).nonempty(),
-    complections: z.array(completionSchema),
+    questions: z.array(QuestionValidateSchema).nonempty(),
   })
-  .strict();
+  .strict() satisfies ZodType<IQuiz>;
 
-export const updateQuizSchema = createQuizSchema.partial();
+export const QuizValidateUpdateSchema = QuizValidateSchema.partial();

@@ -1,4 +1,5 @@
 import Express, { NextFunction, Request, Response } from "express";
+import cors from "cors";
 import indexRoute from "./routes";
 import { config } from "dotenv";
 import mongoose from "mongoose";
@@ -7,6 +8,7 @@ config();
 const app = Express();
 
 app.use(Express.json());
+app.use(cors());
 app.use(indexRoute);
 
 app.use((error: any, _req: Request, res: Response, _next: NextFunction) => {

@@ -2,10 +2,18 @@ import { SelectHTMLAttributes } from "react";
 import styles from "./Select.module.css";
 import { firstLetterUpperCase } from "../../../helpers/firstLetterUpperCase";
 
-export interface ISelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+export interface myHTMLSelectElement extends HTMLSelectElement {
+  nestedType: "array" | "object";
+}
+
+export interface ISelectProps
+  extends SelectHTMLAttributes<myHTMLSelectElement> {
   options: string[];
   label: string;
+  nestedType?: "array" | "object";
 }
+
+export type SelectChangeEventType = React.ChangeEvent<myHTMLSelectElement>;
 
 const Select = (props: ISelectProps) => {
   return (

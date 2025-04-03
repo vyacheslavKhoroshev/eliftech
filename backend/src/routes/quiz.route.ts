@@ -1,21 +1,22 @@
 import { Router } from "express";
 
 import { validateSchema } from "../middlewares/validation.middleware";
-import {
-  createQuizSchema,
-  updateQuizSchema,
-} from "../middlewares/quiz.validation";
+
 import { QuizController } from "../controllers/quiz.controller";
+import {
+  QuizValidateSchema,
+  QuizValidateUpdateSchema,
+} from "../middlewares/quiz.validation";
 
 const quizRoute = Router();
 
 quizRoute.get("", QuizController.getAll);
 quizRoute.get("/:id", QuizController.getById);
 quizRoute.delete("/:id", QuizController.delete);
-quizRoute.post("", validateSchema(createQuizSchema), QuizController.create);
+quizRoute.post("", validateSchema(QuizValidateSchema), QuizController.create);
 quizRoute.patch(
   "/:id",
-  validateSchema(updateQuizSchema),
+  validateSchema(QuizValidateUpdateSchema),
   QuizController.update
 );
 

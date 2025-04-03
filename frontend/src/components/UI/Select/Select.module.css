@@ -9,7 +9,7 @@
   appearance: none;
   background: var(--color-formElemnt);
   border: 1px solid var(--color-dark);
-  border-radius: 5px;
+  border-radius: 2px;
   padding-left: 0.7rem;
   font-size: 1rem;
   height: 1.8rem;

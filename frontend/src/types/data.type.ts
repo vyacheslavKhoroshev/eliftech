@@ -1,25 +1,24 @@
 export interface IQuestion {
-  id: string;
+  _id: string;
   question: string;
   type: string;
   choices: (string | number)[];
 }
 
-export interface IQuizCard {
-  id: string;
-  name: string;
-  description: string;
-  questions: IQuestion[];
-  questionsAmount: number;
-  completionsAmount: number;
-}
-
 export interface IAnswer {
-  [key: string]: string | number;
+  [key: string]: (string | number)[] | string | number;
 }
 
 export interface IComplection {
-  quizCardId: string;
-  answers: IAnswer;
+  quizId: string;
+  answers: IAnswer[];
   time: string;
+}
+
+export interface IQuiz {
+  _id: string;
+  name: string;
+  description: string;
+  questions: IQuestion[];
+  complections?: IComplection[];
 }

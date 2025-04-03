@@ -1,16 +1,15 @@
-import { BaseSyntheticEvent, useState } from "react";
 import { INPUT_TYPE } from "../../../types/input.type";
 import { QUESTION_TYPE } from "../../../types/questionType.enum";
 import Input from "../../UI/Input/Input";
 import Button from "../../UI/Button/Button";
 import { useCatalogContext } from "../../../hooks/useCatalogContext";
-import { IAnswer, IComplection, IQuizCard } from "../../../types/data.type";
+import { IAnswer, IComplection, IQuiz } from "../../../types/data.type";
 import styles from "./InteractiveFrom.module.css";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 const InteractiveForm: React.FC<{
   setComplete: (arg0: boolean) => void;
-  quiz: IQuizCard;
+  quiz: IQuiz;
 }> = ({ setComplete, quiz }) => {
   const { register, handleSubmit } = useForm();
   const { setCatalog, setCompletions } = useCatalogContext()!;
@@ -18,18 +17,17 @@ const InteractiveForm: React.FC<{
   const setCompletionsAmount = () => {
     setCatalog((prev) => {
       const updatedCatalog = prev;
-      const index = updatedCatalog.findIndex((card) => card.id === quiz.id);
+      const index = updatedCatalog.findIndex((card) => card._id === quiz._id);
       updatedCatalog[index].completionsAmount =
         updatedCatalog[index].completionsAmount + 1;
       return updatedCatalog;
     });
   };
 
-  const onSubmit = (answers: IAnswer) => {
-    const completion = {
-      quizCardId: quiz.id,
-      answers,
-      time: "",
+  const onSubmit: SubmitHandler<FieldValues> = (e: any) => {
+    const completion: IComplection = {
+      answers: e,
+      time: "01:01:01",
     };
     setComplete(true);
     setCompletionsAmount();
@@ -51,7 +49,7 @@ const InteractiveForm: React.FC<{
             question.choices!.map((choise, index) => {
               return (
                 <Input
-                  id={question.id}
+                  id={question._id}
                   type={
                     question.type === QUESTION_TYPE.MULTIPLE_CHOISE
                       ? INPUT_TYPE.CHECKBOX
@@ -65,8 +63,8 @@ const InteractiveForm: React.FC<{
             })
           ) : (
             <Input
-              id={question.id}
-              key={question.id}
+              id={question._id}
+              key={question._id}
               {...register(question.question)}
             />
           )}

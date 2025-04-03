@@ -1,32 +1,47 @@
 .input {
-  border: 1px solid #000;
+  border: 1px solid var(--color-dark);
   background: var(--color-formElemnt);
-  border-radius: 5px;
-  padding-left: 0.7rem;
+  border-radius: 2px;
+  padding: 0 2rem 0 0.7rem;
   font-size: 1rem;
   height: 1.8rem;
 }
 
 .input::placeholder {
-  background: var(--color-formElemnt);
 }
 
 .input_container {
+  position: relative;
   display: flex;
   flex-direction: column;
   margin: 1rem;
   min-width: 10rem;
-  max-width: 30rem;
+  max-width: 20rem;
 }
 
 .input:focus {
-  box-shadow: 3px 3px #e90000;
+  box-shadow: 2px 2px var(--color-dark);
 }
 
 .input:focus:invalid {
-  background-color: red;
+  background-color: var(--color-dark);
 }
 
 .input:invalid:out-of-range {
-  background-color: red;
+  background-color: var(--color-dark);
+}
+
+.btn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: var(--color-white);
+  padding: 0.1rem 0.5rem;
+  z-index: 2;
+}
+
+.btn::after {
+  content: "\2714";
+  font-size: 1.25rem;
+  color: var(--color-dark);
 }

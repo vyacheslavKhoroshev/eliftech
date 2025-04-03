@@ -1,114 +1,85 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./Builder.module.css";
-import { QUESTION_TYPE } from "../../../types/questionType.enum";
 import Input from "../../../components/UI/Input/Input";
 import Button from "../../../components/UI/Button/Button";
-import { useLocation, useNavigate } from "react-router-dom";
+import { InputChangeEventType } from "../../../components/UI/Input/Input";
 import { ROUTE } from "../../../types/route.enum";
-import { useCatalogContext } from "../../../hooks/useCatalogContext";
+import { IQuestion, IQuiz } from "../../../types/data.type";
 import QuestionBuilderForm from "../../../components/QuestionBuilderForm/QuestionBuilderForm";
-import { IQuestion, IQuizCard } from "../../../types/data.type";
-
-class DefaultQuestion implements IQuestion {
-  id: string;
-  question: string;
-  type: string;
-  choices: (string | number)[];
-
-  constructor() {
-    this.id = crypto.randomUUID();
-    this.question = "";
-    this.type = QUESTION_TYPE.TEXT;
-    this.choices = [];
-  }
-}
+import { useCatalogContext, useHandleOnChange } from "../../../hooks";
+import { InitQuestion, InitQuiz } from "../../../context/initBuilders";
 
 const Builder: React.FC = () => {
-  const state = useLocation().state as IQuizCard;
+  const state = useLocation().state as IQuiz;
   const navigation = useNavigate();
   const { setCatalog } = useCatalogContext()!;
-
-  const [name, setName] = useState<string>(state ? state.name : "");
-  const [description, setDescription] = useState<string>(
-    state ? state.description : ""
-  );
-  const [questions, setQuestions] = useState<IQuestion[]>(
-    state ? state.questions : [new DefaultQuestion()]
-  );
+  const [quiz, setQuiz] = useState(state ? state : new InitQuiz())!;
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const qiuzCard: IQuizCard = {
-      id: crypto.randomUUID(),
-      name,
-      description,
-      questions,
-      questionsAmount: questions.length,
-      completionsAmount: 0,
+    console.log("bifs");
+    const updateCard = async () => {};
+    const createCard = async () => {
+      setCatalog((prev) => [...prev, quiz]);
     };
-
-    const updateCard = () => {
-      setCatalog((prev) => {
-        const catalog = prev;
-        const index = prev.findIndex((card) => card.id === state.id);
-        catalog[index] = qiuzCard;
-        return catalog;
-      });
-    };
-
-    const addCard = () => {
-      setCatalog((prev) => [...prev, qiuzCard]);
-    };
-
-    state ? updateCard() : addCard();
-
+    state ? updateCard() : createCard();
     navigation(ROUTE.CATALOG);
   };
+
+  const addQuestion = () =>
+    setQuiz((prev) => {
+      return { ...prev, questions: [...prev.questions, new InitQuestion()] };
+    });
+
+  const updateQuestion = (question: IQuestion) => {
+    setQuiz((prev) => {
+      const index = prev.questions.findIndex((q) => q._id === question._id);
+
+      const updatedQuestions = prev.questions;
+      updatedQuestions[index] = question;
+      return { ...prev, questions: updatedQuestions };
+    });
+  };
+  const removeQuestion = (_id: string) => {
+    setQuiz((prev) => {
+      const updatedQuestions = prev.questions.filter(
+        (question) => question._id !== _id
+      );
+      return { ...prev, questions: updatedQuestions };
+    });
+  };
+
+  const handleOnChange = (e: InputChangeEventType) =>
+    useHandleOnChange(e, setQuiz);
 
   return (
     <div className={styles.builder_container}>
       <h2>Create Quiz</h2>
       <form className={styles.builder_form} onSubmit={onSubmit}>
         <Input
-          value={name}
-          type="text"
+          value={quiz.name}
+          name="name"
           labelname="quiz name"
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleOnChange}
         />
         <Input
-          value={description}
-          type="text"
+          value={quiz.description}
+          name="description"
           labelname="description"
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={handleOnChange}
         />
-        {questions.map((question, i) => (
+        {quiz.questions.map((question, i) => (
           <QuestionBuilderForm
             number={i + 1}
-            key={question.id}
-            question={question}
-            setQuestions={(question) => {
-              const index = questions.findIndex((q) => q.id === question.id);
-              const newQuestions = questions;
-              newQuestions[index] = question;
-              setQuestions(newQuestions);
-            }}
-            removeQuestion={(id) =>
-              setQuestions((prev) => {
-                const updatedQuestions = prev.filter((q) => q.id !== id);
-                return updatedQuestions;
-              })
-            }
+            key={question._id}
+            data={question}
+            remove={removeQuestion}
+            update={updateQuestion}
           />
         ))}
 
-        <Button
-          name="add question"
-          onClick={(e) => {
-            e.preventDefault();
-            setQuestions([...questions, new DefaultQuestion()]);
-          }}
-        />
+        <Button name="add question" type="button" onClick={addQuestion} />
         <Button name="save quiz" type="submit" />
       </form>
     </div>

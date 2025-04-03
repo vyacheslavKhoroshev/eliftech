@@ -1,13 +1,16 @@
 .button {
-  height: 2rem;
-  line-height: 2rem;
   background: var(--color-btn);
-  border-radius: 0.3rem;
+  color: var(--color-dark);
+  outline: 3px solid var(--color-dark);
+  border-radius: 1px;
+  line-height: 2rem;
+  height: 2rem;
   width: 8rem;
+  margin: 1rem;
   font-weight: 600;
   box-shadow: inset;
   border-collapse: collapse;
-  margin: 1rem;
+  font-size: 1rem;
 }
 
 .button:hover {

@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./QuizCard.module.css";
-import { IQuizCard } from "../../types/data.type";
+import { IQuiz } from "../../types/data.type";
 import { ROUTE } from "../../types/route.enum";
 import { ACTION } from "../../types/action.enum";
 import Button from "../UI/Button/Button";
 import { useCatalogContext } from "../../hooks/useCatalogContext";
+import { QuizService } from "../../API/QuizService";
 
-const QuizCard: React.FC<{ quiz: IQuizCard }> = ({ quiz }) => {
+const QuizCard: React.FC<{ quiz: IQuiz }> = ({ quiz }) => {
   const [actionsStatus, setActionStatus] = useState<boolean>(false);
   const { catalog, setCatalog } = useCatalogContext()!;
   const navigate = useNavigate();
@@ -21,10 +22,11 @@ const QuizCard: React.FC<{ quiz: IQuizCard }> = ({ quiz }) => {
     navigate(ROUTE.INTERACTIVE, { state: quiz });
   };
 
-  const deleteCard = () => {
-    const updatedCatalog = catalog.filter((card) => card.id !== quiz.id);
+  const deleteCard = async () => {
+    const updatedCatalog = catalog.filter((card) => card._id !== quiz._id);
     console.log(updatedCatalog);
     setCatalog(updatedCatalog);
+    await QuizService.delete(quiz._id!);
   };
 
   return (
@@ -39,10 +41,10 @@ const QuizCard: React.FC<{ quiz: IQuizCard }> = ({ quiz }) => {
       </div>
       <p className={styles.quiz_description}>{quiz.description}</p>
       <div className={styles.quiz_questions}>
-        Questions: {quiz.questionsAmount}
+        Questions: {quiz.questions.length}
       </div>
       <div className={styles.quiz_questions}>
-        Completions: {quiz.completionsAmount}
+        Completions: {quiz.complections?.length}
       </div>
 
       <div className={styles.actions}>
